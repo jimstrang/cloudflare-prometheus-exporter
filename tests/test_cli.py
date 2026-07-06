@@ -20,6 +20,8 @@ class TestMainCommand:
         runner = CliRunner()
         result = runner.invoke(main, [])
         assert result.exit_code == 0
+        assert "Commands:" in result.output
+        assert "export" in result.output
 
     def test_main_command_with_debug_flag(self):
         """Test main command with debug flag and subcommand."""
@@ -162,8 +164,7 @@ class TestLoggingConfiguration:
     """Test cases for logging configuration."""
 
     def test_logging_module_imports_successfully(self):
-        """Test that cli module imports successfully with logging config."""
-        # This test verifies that the module-level logging configuration doesn't cause errors
+        """Test that cli module imports successfully."""
         try:
             from cloudflare_exporter import cli
 
@@ -177,12 +178,11 @@ class TestLoggingConfiguration:
 
         assert hasattr(cli, "LOGGER")
 
-    def test_logger_configuration_at_import_time(self):
-        """Test that logger is configured when module is imported."""
+    def test_cli_module_logger_is_logger(self):
+        """Test that cli module LOGGER is a logger instance."""
         from cloudflare_exporter import cli
         import logging
 
-        # Verify LOGGER exists and is a logger instance
         assert isinstance(cli.LOGGER, logging.Logger)
 
 

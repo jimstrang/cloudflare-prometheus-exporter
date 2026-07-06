@@ -6,22 +6,34 @@ import yaml
 import click
 import logging
 import logging.config
+from importlib import resources
 from .cloudflare_exporter import run_exporter
 
-# logging
-with open("logging.yaml", "r") as f:
-    log_cfg = yaml.safe_load(f.read())
-    logging.config.dictConfig(log_cfg)
-    LOGGER = logging.getLogger("stdout")
+LOGGER = logging.getLogger("stdout")
+_load_logging_yaml = yaml.load
 
 
-@click.group()
-@click.option("--debug/--no-debug", default=False)
-def main(debug):
-    """Console script for cloudflare_exporter."""
-    LOGGER.debug(
-        f"Running cloudflare_exporter in %s mode" % ("debug" if debug else "standard")
+def configure_logging():
+    log_cfg = _load_logging_yaml(
+        resources.files("cloudflare_exporter")
+        .joinpath("logging.yaml")
+        .read_text(encoding="utf-8"),
+        Loader=yaml.SafeLoader,
     )
+    logging.config.dictConfig(log_cfg)
+
+
+@click.group(invoke_without_command=True)
+@click.option("--debug/--no-debug", default=False)
+@click.pass_context
+def main(ctx, debug):
+    """Console script for cloudflare_exporter."""
+    configure_logging()
+    LOGGER.debug(
+        "Running cloudflare_exporter in %s mode", "debug" if debug else "standard"
+    )
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
 
 @main.command()

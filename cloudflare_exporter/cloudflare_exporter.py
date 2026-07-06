@@ -171,7 +171,7 @@ def job(
     if errors:
         LOGGER.error(errors, extra=variables)
 
-    LOGGER.debug(raw_data)
+    LOGGER.debug("cloudflare response received", extra=variables)
     metrics = parser_httpRequests1hGroups(
         raw_data, endpoint="zones", zone=zone, query_key=gql_api, timerange=timerange
     )

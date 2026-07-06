@@ -45,6 +45,10 @@ setup(
     include_package_data=True,
     keywords="cloudflare_exporter",
     name="cloudflare-prometheus-exporter",
+    package_data={
+        "cloudflare_exporter": ["logging.yaml"],
+        "cloudflare_exporter.gql": ["*.graphql"],
+    },
     packages=find_packages(include=["cloudflare_exporter", "cloudflare_exporter.gql"]),
     setup_requires=setup_requirements,
     test_suite="tests",

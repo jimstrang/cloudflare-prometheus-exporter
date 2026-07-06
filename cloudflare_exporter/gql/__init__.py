@@ -2,6 +2,8 @@
 
 """Top-level package for Prometheus Cloudflare Exporter."""
 
+from importlib import resources
+
 __author__ = """Observability :: TransfewrWise"""
 __email__ = "observability@transferwise.com"
 __version__ = "0.1.12"
@@ -25,11 +27,8 @@ class CloudflareGQLQuery:
 
 
 def read_gql_query(query_file):
-    query_path = "cloudflare_exporter/gql/"
-    query_file = query_path + query_file
-    with open(query_file) as data:
-        query = "".join(line.rstrip().lstrip() for line in data)
-    return query
+    query = resources.files(__package__).joinpath(query_file).read_text(encoding="utf-8")
+    return "".join(line.rstrip().lstrip() for line in query.splitlines())
 
 
 query = CloudflareGQLQuery()
